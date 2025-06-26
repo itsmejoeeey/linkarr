@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Linkarr Config",
+  "description": "Configuration for the Linkarr media organizer.",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": ["watch", "once"],
+      "default": "watch",
+      "description": "Run mode: 'watch' to monitor folders and rerun on changes, 'once' to process a single time."
+    },
+    "media_server_format": {
+      "type": "string",
+      "enum": ["jellyfin"],
+      "default": "jellyfin",
+      "description": "Target media server format for organization: 'jellyfin'."
+    },
+    "log_level": {
+      "type": "string",
+      "enum": ["debug", "info", "warning", "error", "critical"],
+      "default": "info",
+      "description": "Logging level: 'debug' for verbose output, 'info' for standard output, 'warning' for warnings only, 'error' for errors only, 'critical' for critical errors only."
+    },
+    "jobs": {
+      "type": "array",
+      "description": "List of media organization jobs.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "src": {
+            "type": "string",
+            "description": "Source directory to scan for media files."
+          },
+          "dest": {
+            "type": "string",
+            "description": "Destination directory for organized media."
+          },
+          "media_type": {
+            "type": "string",
+            "enum": ["tv", "movie"],
+            "description": "Type of media: 'tv' or 'movie'."
+          },
+          "file_type_regex": {
+            "type": "string",
+            "default": ".*\\.(mkv|mp4|avi)$",
+            "description": "Regex for allowed file types."
+          }
+        },
+        "required": ["src", "dest", "media_type"]
+      }
+    }
+  },
+  "required": ["jobs"]
+} 

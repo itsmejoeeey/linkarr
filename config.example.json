@@ -1,0 +1,18 @@
+{
+  "mode": "watch",
+  "media_server_format": "jellyfin",
+  "log_level": "info",
+  "jobs": [
+    {
+      "src": "/path/to/source/tv",
+      "dest": "/path/to/organized/tv",
+      "media_type": "tv"
+    },
+    {
+      "src": "/path/to/source/movies",
+      "dest": "/path/to/organized/movies",
+      "media_type": "movie",
+      "file_type_regex": ".*\\.(mkv|mp4|avi)$"
+    }
+  ]
+} 

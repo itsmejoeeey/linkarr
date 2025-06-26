@@ -1,0 +1,3 @@
+jsonschema==4.24.0
+titlecase==2.4.1
+watchdog==6.0.0
