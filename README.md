@@ -23,6 +23,8 @@ _Example:_
 ## Getting started
 ### 🚀 Docker Usage (Recommended)
 
+[![Docker Hub](https://dockerico.blankenship.io/image/itsmejoeeey/linkarr)](https://hub.docker.com/r/itsmejoeeey/linkarr)
+
 You will need [Docker](https://docs.docker.com/get-docker/) installed on your system.
 
 > **Important:** You must map your source and destination folders to the **same paths inside the container as on your host system**. This ensures symlinks work correctly.
