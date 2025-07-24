@@ -1,16 +1,18 @@
 import os
+import re
 from abc import ABC, abstractmethod
 from typing import Optional
-from linkarr.helpers import create_symlink
+from linkarr.helpers import create_symlink, logger
 from linkarr.models import ParsedInfo
 
 
 class BaseParser(ABC):
     """Base class for media parsers that provides common functionality."""
 
-    def __init__(self, dest_path: str):
-        """Initialize parser with destination path."""
+    def __init__(self, dest_path: str, file_type_regex: str):
+        """Initialize parser."""
         self.dest_path = dest_path
+        self.file_type_regex = file_type_regex
 
     @abstractmethod
     def parse_info(self, source_file_path: str) -> Optional[ParsedInfo]:
@@ -38,6 +40,10 @@ class BaseParser(ABC):
         """
         pass
 
+    def check_file_type_valid(self, source_file_path: str) -> bool:
+        """Check if the file matches the file_type_regex."""
+        return re.match(self.file_type_regex, source_file_path) is not None
+
     def organize_file(self, source_file_path: str) -> Optional[str]:
         """
         Organize a file by creating a symlink at the calculated destination.
@@ -48,6 +54,10 @@ class BaseParser(ABC):
         Returns:
             Path to the created symlink, or None if organization fails
         """
+        if not self.check_file_type_valid(source_file_path):
+            logger.debug(f"Skipping file with ignored file type: {source_file_path}")
+            return None
+
         dest_path = self.get_destination_path(source_file_path)
         if not dest_path:
             return None
