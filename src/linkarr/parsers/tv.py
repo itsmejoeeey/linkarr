@@ -1,8 +1,8 @@
-import logging
 import os
 import re
 from typing import Optional
 from .base import BaseParser
+from linkarr.helpers import logger
 from linkarr.models import TVShowInfo
 
 
@@ -13,7 +13,7 @@ class TVParser(BaseParser):
         """Parse TV show information from a source file path."""
         result = re.search(r".*/(.*).[Ss]([0-9]{2})[Ee]([0-9]{2}).*$", source_file_path)
         if not result:
-            logging.debug(f"Failed to parse TV show info from {source_file_path}")
+            logger.warning(f"Failed to parse TV show info from file: {source_file_path}")
             return None
 
         series_name = result.group(1).replace(".", " ").title()
