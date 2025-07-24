@@ -1,8 +1,8 @@
-import logging
 import os
 import re
 from typing import Optional
 from .base import BaseParser
+from linkarr.helpers import logger
 from linkarr.models import MovieInfo
 
 
@@ -13,7 +13,7 @@ class MovieParser(BaseParser):
         """Parse movie information from a source file path."""
         result = re.search(r".*/(.*?)\.([0-9]{4})\..*$", source_file_path)
         if not result:
-            logging.debug(f"Failed to parse movie info from {source_file_path}")
+            logger.warning(f"Failed to parse movie info from file: {source_file_path}")
             return None
 
         title = result.group(1).replace(".", " ").title()

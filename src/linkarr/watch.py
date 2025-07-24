@@ -1,7 +1,7 @@
-import logging
 import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from linkarr.helpers import logger
 
 
 def watch_folders(watched_folders, on_change_callback):
@@ -13,15 +13,15 @@ def watch_folders(watched_folders, on_change_callback):
             self.watched_folder = watched_folder
 
         def on_created(self, event):
-            logging.info(f"Detected file created: {event.src_path}")
+            logger.info(f"Detected file created: {event.src_path}")
             self.handler()
 
         def on_deleted(self, event):
-            logging.info(f"Detected file deleted: {event.src_path}")
+            logger.info(f"Detected file deleted: {event.src_path}")
             self.handler()
 
         def on_moved(self, event):
-            logging.info(f"Detected file moved: {event.src_path} to {event.dest_path}.")
+            logger.info(f"Detected file moved: {event.src_path} to {event.dest_path}.")
             self.handler()
 
         def handler(self):
@@ -32,10 +32,11 @@ def watch_folders(watched_folders, on_change_callback):
         event_handler = RerunHandler(folder)
         observer.schedule(event_handler, folder, recursive=True)
     observer.start()
-    logging.info(f"Watching folders: {watched_folders}")
+    logger.info(f"Watching folders: {watched_folders}")
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
+        logger.info(f"Shutting down...")
         observer.stop()
     observer.join()

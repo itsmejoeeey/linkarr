@@ -1,9 +1,8 @@
 import argparse
-import logging
 import sys
 import os
 from linkarr.config import load_config, ConfigError
-from linkarr.helpers import clean_broken_symlinks, find_media_files, is_directory_path, setup_logging
+from linkarr.helpers import clean_broken_symlinks, find_media_files, is_directory_path, logger, setup_logging
 from linkarr.models import Job, MediaType, Config
 from linkarr.parsers.tv import TVParser
 from linkarr.parsers.movie import MovieParser
@@ -29,7 +28,7 @@ def process_job(job: Job):
         if symlink_path is not None:
             num_added_symlinks += 1
 
-    logging.info(
+    logger.info(
         f"Added {num_added_symlinks} new symlink(s), removed {num_removed_symlinks} broken symlink(s)."
     )
 
@@ -44,10 +43,10 @@ def process_job_for_folder(config: Config, changed_folder: str):
     """Process only the job associated with the changed folder."""
     for job in config.jobs:
         if job.src == changed_folder:
-            logging.info(f"Processing job for changed folder: {changed_folder}")
+            logger.info(f"Processing job for changed folder: {changed_folder}")
             process_job(job)
             return
-    logging.warning(f"No job found for folder: {changed_folder}")
+    logger.warning(f"No job found for folder: {changed_folder}")
 
 
 def main():
@@ -58,28 +57,28 @@ def main():
     try:
         config = load_config(args.config)
     except ConfigError as e:
-        logging.error(f"Config error: {e}")
+        logger.error(f"Config error: {e}")
         sys.exit(1)
 
     # Setup logging with the configured log level
     setup_logging(config.log_level)
-    logging.info(f"Config loaded from {args.config} successfully")
+    logger.info(f"Config loaded from {args.config} successfully")
 
     match config.mode:
         case "watch":
-            logging.info(f"Performing initial run")
+            logger.info(f"Performing initial run")
             process_jobs(config)
 
             watched_folders = [job.src for job in config.jobs if job.enabled]
             for folder in watched_folders:
                 if not is_directory_path(folder):
-                    logging.error(f"Source folder does not exist: {folder}")
+                    logger.error(f"Source folder does not exist: {folder}")
                     sys.exit(1)
 
-            logging.info(f"Watching {len(watched_folders)} folders")
+            logger.info(f"Watching {len(watched_folders)} folders")
             watch_folders(watched_folders, lambda changed_folder: process_job_for_folder(config, changed_folder))
         case "once":
-            logging.info(f"Triggering a single run")
+            logger.info(f"Triggering a single run")
             process_jobs(config)
 
 

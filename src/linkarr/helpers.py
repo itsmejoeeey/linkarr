@@ -3,6 +3,7 @@ import os
 import shutil
 import re
 
+logger = logging.getLogger("linkarr")
 
 def ensure_directory_exists(path):
     """Ensure the given directory exists."""
@@ -26,10 +27,10 @@ def create_symlink(src_file, dest_path):
     ensure_directory_exists(dest_path)
     rel_src_file, dest_file = get_relative_symlink_paths(src_file, dest_path)
     if symlink_exists(dest_file):
-        logging.debug(f"Link '{dest_file}' already exists... Skipping...")
+        logger.debug(f"Link '{dest_file}' already exists... Skipping...")
         return
     os.symlink(rel_src_file, dest_file)
-    logging.debug(f"Created symlink: {dest_file} -> {rel_src_file}")
+    logger.debug(f"Created symlink: {dest_file} -> {rel_src_file}")
     return dest_file
 
 
@@ -47,17 +48,17 @@ def is_broken_symlink(symlink_location):
 def remove_broken_symlink(symlink_location):
     """Remove a broken symlink and log a warning."""
     if not os.path.islink(symlink_location):
-        logging.error(f"Attempting remove non-symlink at path {symlink_location}")
+        logger.error(f"Attempting remove non-symlink at path {symlink_location}")
         return False
-    logging.warning(f"Path {symlink_location} is a broken symlink")
+    logger.warning(f"Path {symlink_location} is a broken symlink")
     os.unlink(symlink_location)
-    logging.debug(f"Removed symlink: {symlink_location}")
+    logger.debug(f"Removed symlink: {symlink_location}")
 
 
 def remove_empty_directory(dir_path, root_path):
     """Remove a directory if it is empty and not the root path."""
     if len(os.listdir(dir_path)) == 0 and dir_path != root_path:
-        logging.warning(f"Deleting empty dir: {dir_path}")
+        logger.warning(f"Deleting empty dir: {dir_path}")
         shutil.rmtree(dir_path)
 
 
@@ -102,10 +103,12 @@ def setup_logging(log_level: str = "info"):
 
     log_level_constant = level_map.get(log_level, logging.INFO)
 
-    logging.basicConfig(
-        level=log_level_constant,
-        format="%(asctime)s [%(levelname)s] %(message)s",
-    )
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+    logger.setLevel(log_level_constant)
+
+    if not logger.hasHandlers():
+        logger.addHandler(handler)
 
 
 def is_directory_path(path):
