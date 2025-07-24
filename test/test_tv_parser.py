@@ -9,7 +9,7 @@ class TestTVParser(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures."""
-        self.parser = TVParser("/media/tv")
+        self.parser = TVParser("/media/tv", ".*\\.mkv$")
 
     #
     # Parse info
@@ -83,7 +83,7 @@ class TestTVParser(unittest.TestCase):
 
         for dest_path, expected in test_cases:
             with self.subTest(dest_path=dest_path):
-                parser = TVParser(dest_path)
+                parser = TVParser(dest_path, ".*\\.mkv$")
                 result = parser.get_destination_path(source_file)
                 self.assertEqual(result, expected)
 

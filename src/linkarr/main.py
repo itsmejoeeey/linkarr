@@ -17,9 +17,9 @@ def process_job(job: Job):
     parser = None
     match job.media_type:
         case "tv":
-            parser = TVParser(job.dest)
+            parser = TVParser(job.dest, job.file_type_regex)
         case "movie":
-            parser = MovieParser(job.dest)
+            parser = MovieParser(job.dest, job.file_type_regex)
 
     num_added_symlinks = 0
     files = find_media_files(job.src, job.file_type_regex)

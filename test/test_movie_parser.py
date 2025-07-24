@@ -9,7 +9,7 @@ class TestMovieParser(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures."""
-        self.parser = MovieParser("/media/movies")
+        self.parser = MovieParser("/media/movies", ".*\\.mkv$")
 
     #
     # Parse info
@@ -74,7 +74,7 @@ class TestMovieParser(unittest.TestCase):
 
         for dest_path, expected in test_cases:
             with self.subTest(dest_path=dest_path):
-                parser = MovieParser(dest_path)
+                parser = MovieParser(dest_path, ".*\\.mkv$")
                 result = parser.get_destination_path(source_file)
                 self.assertEqual(result, expected)
 
