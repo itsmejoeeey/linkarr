@@ -1,7 +1,6 @@
 import logging
 import os
 import re
-from titlecase import titlecase
 from typing import Optional
 from .base import BaseParser
 from linkarr.models import MovieInfo
@@ -17,7 +16,7 @@ class MovieParser(BaseParser):
             logging.debug(f"Failed to parse movie info from {source_file_path}")
             return None
 
-        title = titlecase(result.group(1).replace(".", " "))
+        title = result.group(1).replace(".", " ").title()
         year = result.group(2)
 
         return MovieInfo(title=title, year=year)

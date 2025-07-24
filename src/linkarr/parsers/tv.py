@@ -1,7 +1,6 @@
 import logging
 import os
 import re
-from titlecase import titlecase
 from typing import Optional
 from .base import BaseParser
 from linkarr.models import TVShowInfo
@@ -17,7 +16,7 @@ class TVParser(BaseParser):
             logging.debug(f"Failed to parse TV show info from {source_file_path}")
             return None
 
-        series_name = titlecase(result.group(1).replace(".", " "))
+        series_name = result.group(1).replace(".", " ").title()
         season_number = result.group(2)
         episode_number = result.group(3)
 
