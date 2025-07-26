@@ -9,6 +9,8 @@ from linkarr.models import ParsedInfo
 class BaseParser(ABC):
     """Base class for media parsers that provides common functionality."""
 
+    DELIM_PATTERN = r"[ .]"  # Delimiter: period or space
+
     def __init__(self, dest_path: str, file_type_regex: str):
         """Initialize parser."""
         self.dest_path = dest_path
