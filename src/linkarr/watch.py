@@ -37,5 +37,6 @@ def watch_folders(watched_folders, on_change_callback):
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
+        logger.info(f"Shutting down...")
         observer.stop()
     observer.join()
