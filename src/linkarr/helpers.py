@@ -103,10 +103,12 @@ def setup_logging(log_level: str = "info"):
 
     log_level_constant = level_map.get(log_level, logging.INFO)
 
-    logger.basicConfig(
-        level=log_level_constant,
-        format="%(asctime)s [%(levelname)s] %(message)s",
-    )
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+    logger.setLevel(log_level_constant)
+
+    if not logger.hasHandlers():
+        logger.addHandler(handler)
 
 
 def is_directory_path(path):
