@@ -48,12 +48,44 @@ class TestTVParser(unittest.TestCase):
             self.assertEqual(result.season_number, "05")
             self.assertEqual(result.episode_number, "10")
 
+    def test_parse_info_with_year(self):
+        """Test parse_info with year before season/episode (year should be ignored)."""
+        file_path = "/path/to/Show.Name.2019.S01E02.mkv"
+        result = self.parser.parse_info(file_path)
+
+        self.assertIsInstance(result, TVShowInfo)
+        if result:
+            self.assertEqual(result.series_name, "Show Name")
+            self.assertEqual(result.season_number, "01")
+            self.assertEqual(result.episode_number, "02")
+
     def test_parse_info_invalid_format_no_season_episode(self):
         """Test parse_info with filename missing season/episode (should fail)."""
         file_path = "/path/to/not.a.tv.show.mkv"
         result = self.parser.parse_info(file_path)
         self.assertIsNone(result)
 
+    def test_parse_info_space_delimited(self):
+        """Test parse_info with space-delimited TV show filename."""
+        file_path = "/path/to/Show Name S01E02.mkv"
+        result = self.parser.parse_info(file_path)
+
+        self.assertIsInstance(result, TVShowInfo)
+        if result:
+            self.assertEqual(result.series_name, "Show Name")
+            self.assertEqual(result.season_number, "01")
+            self.assertEqual(result.episode_number, "02")
+
+    def test_parse_info_space_delimited_with_year(self):
+        """Test parse_info with year before season/episode and space delimiter."""
+        file_path = "/path/to/Show Name 2019 S01E02.mkv"
+        result = self.parser.parse_info(file_path)
+
+        self.assertIsInstance(result, TVShowInfo)
+        if result:
+            self.assertEqual(result.series_name, "Show Name")
+            self.assertEqual(result.season_number, "01")
+            self.assertEqual(result.episode_number, "02")
 
     #
     # Get destination path

@@ -45,6 +45,15 @@ class TestMovieParser(unittest.TestCase):
             self.assertEqual(result.title, "Movie-Title!@#")
             self.assertEqual(result.year, "2023")
 
+    def test_parse_info_space_delimited(self):
+        """Test parse_info with space-delimited movie filename."""
+        source_file = "/path/to/Movie Title 2023.mkv"
+        result = self.parser.parse_info(source_file)
+
+        self.assertIsInstance(result, MovieInfo)
+        if result:
+            self.assertEqual(result.title, "Movie Title")
+            self.assertEqual(result.year, "2023")
 
     #
     # Get destination path

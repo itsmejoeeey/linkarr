@@ -11,13 +11,22 @@ class MovieParser(BaseParser):
 
     def parse_info(self, source_file_path: str) -> Optional[MovieInfo]:
         """Parse movie information from a source file path."""
-        result = re.search(r".*/(.*?)\.([0-9]{4})\..*$", source_file_path)
+        delim = self.DELIM_PATTERN
+        pattern = (
+            rf"(?:.*/)?"            # Optional path
+            rf"(?P<movie>.+?)"      # Movie name (non-greedy)
+            rf"{delim}"
+            rf"(?P<year>\d{{4}})"   # Movie year
+            rf"(?:.*$)"             # Rest of the filename
+        )
+        result = re.search(pattern, source_file_path)
         if not result:
             logger.warning(f"Failed to parse movie info from file: {source_file_path}")
             return None
 
-        title = result.group(1).replace(".", " ").title()
-        year = result.group(2)
+        title = re.sub(delim, " ", result.group("movie"))
+        title = title.strip().title()
+        year = result.group("year")
 
         return MovieInfo(title=title, year=year)
 

@@ -11,14 +11,26 @@ class TVParser(BaseParser):
 
     def parse_info(self, source_file_path: str) -> Optional[TVShowInfo]:
         """Parse TV show information from a source file path."""
-        result = re.search(r".*/(.*).[Ss]([0-9]{2})[Ee]([0-9]{2}).*$", source_file_path)
+        delim = self.DELIM_PATTERN
+        pattern = (
+            rf"(?:.*/)?"                    # Optional path
+            rf"(?P<series>.+?)"             # Series name (non-greedy)
+            rf"{delim}"
+            rf"(?:\d{{4}}{delim})?"         # Optional year
+            rf"[Ss](?P<season>\d{{2}})"     # Season
+            rf"[Ee](?P<episode>\d{{2}})"    # Episode
+            rf"(?:.*$)"                     # Rest of the filename
+        )
+
+        result = re.search(pattern, source_file_path, re.VERBOSE)
         if not result:
             logger.warning(f"Failed to parse TV show info from file: {source_file_path}")
             return None
 
-        series_name = result.group(1).replace(".", " ").title()
-        season_number = result.group(2)
-        episode_number = result.group(3)
+        series_name = re.sub(delim, " ", result.group("series"))
+        series_name = series_name.strip().title()
+        season_number = result.group("season")
+        episode_number = result.group("episode")
 
         return TVShowInfo(
             series_name=series_name,
